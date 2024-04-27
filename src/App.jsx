@@ -2,14 +2,9 @@ import React from "react";
 import "./index.css";
 import Sidebar, { SidebarItem } from "./components/Sidebar";
 import {
-  LifeBuoy,
-  Receipt,
-  Boxes,
-  Package,
   UserCircle,
   BarChart3,
   LayoutDashboard,
-  Settings,
 } from "lucide-react";
 
 const App = () => {
