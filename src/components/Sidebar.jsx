@@ -1,102 +1,168 @@
-import { MoreVertical, ChevronLast, ChevronFirst } from "lucide-react"
-import { useContext, createContext, useState } from "react"
+/* eslint-disable no-unused-vars */
+import React, { useState } from "react";
 
-const SidebarContext = createContext()
+const Sidebar = () => {
+  const [isOpen, setIsOpen] = useState(false);
+  const [isProjectsOpen, setIsProjectsOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [newProject, setNewProject] = useState({ title: "", description: "" });
 
-export default function Sidebar({ children }) {
-  const [expanded, setExpanded] = useState(true)
-  
+  const toggleProjectsMenu = () => {
+    setIsProjectsOpen(!isProjectsOpen);
+  };
+
+  const openModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setNewProject((prevState) => ({
+      ...prevState,
+      [name]: value,
+    }));
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    // Handle submitting new project data here
+    console.log("New Project:", newProject);
+    // Clear input fields
+    setNewProject({ title: "", description: "" });
+    // Close the modal
+    closeModal();
+  };
+
   return (
-    <aside className="h-screen">
-      <nav className="h-full w-[250px] flex flex-col bg-blue-100 border-r shadow-sm">
-        <div className="p-4 pb-2 flex justify-between items-center">
-          <img
-            src=""
-            className={`overflow-hidden transition-all ${
-              expanded ? "w-32" : "w-0"
-            }`}
-            alt=""
-          />
-          {/* <button
-            onClick={() => setExpanded((curr) => !curr)}
-            className="p-1.5 rounded-lg bg-gray-50 hover:bg-gray-100"
-          >
-            {expanded ? <ChevronFirst /> : <ChevronLast />}
-          </button> */}
+    <>
+      <aside
+        id="sidebar-multi-level-sidebar"
+        className={`fixed top-0 left-0 z-40 w-64 h-screen transition-transform ${
+          isOpen ? "" : "-translate-x-full sm:translate-x-0"
+        }`}
+        aria-label="Sidebar"
+        style={{ overflowX: "hidden" }}
+      >
+        <div className="h-full px-3 py-4 overflow-y-auto bg-blue-100 dark:bg-blue-800">
+          <ul className="space-y-2 font-medium">
+            <li>
+              <a
+                href="#"
+                className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
+              >
+                <span className="ms-3">Dashboard</span>
+              </a>
+            </li>
+            <li>
+              <button
+                type="button"
+                onClick={toggleProjectsMenu}
+                className="flex items-center justify-between w-[94%] p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
+              >
+                <span className="ms-3">Sandesh's Projects</span>
+                <button
+                  type="button"
+                  className="relative p-1 rounded-full bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600"
+                  onClick={openModal}
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-4 w-4 text-gray-600 dark:text-gray-300"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M10 3a1 1 0 0 1 1 1v5h5a1 1 0 1 1 0 2h-5v5a1 1 0 1 1-2 0v-5H4a1 1 0 1 1 0-2h5V4a1 1 0 0 1 1-1z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
+                </button>
+              </button>
+              <ul
+                className={`space-y-1 font-medium ${
+                  isProjectsOpen ? "" : "hidden"
+                }`}
+              >
+                <li>
+                  <a
+                    href="#"
+                    className="flex items-center p-2 pl-10 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
+                  >
+                    <span className="ms-3">Demo Project 1</span>
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="#"
+                    className="flex items-center p-2 pl-10 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
+                  >
+                    <span className="ms-3">Demo Project 2</span>
+                  </a>
+                </li>
+              </ul>
+            </li>
+          </ul>
         </div>
+      </aside>
 
-        <SidebarContext.Provider value={{ expanded }}>
-          <ul className="flex-1 px-3">{children}</ul>
-        </SidebarContext.Provider>
-
-        <div className="border-t flex p-3">
-          <img
-            src="https://ui-avatars.com/api/?background=c7d2fe&color=3730a3&bold=true"
-            alt=""
-            className="w-10 h-10 rounded-md"
-          />
-          <div
-            className={`
-              flex justify-between items-center
-              overflow-hidden transition-all ${expanded ? "w-52 ml-3" : "w-0"}
-          `}
-          >
-            <div className="leading-4">
-              <h4 className="font-semibold">John Doe</h4>
-              <span className="text-xs text-gray-600">johndoe@gmail.com</span>
-            </div>
-            <MoreVertical size={20} />
+      {/* Modal */}
+      {isModalOpen && (
+        <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50">
+          <div className="bg-white p-6 rounded-lg w-96">
+            <h2 className="text-lg font-semibold mb-4">Add a Project</h2>
+            <form onSubmit={handleSubmit}>
+              <div className="mb-4">
+                <label htmlFor="title" className="block mb-1">
+                  Title:
+                </label>
+                <input
+                  type="text"
+                  id="title"
+                  name="title"
+                  value={newProject.title}
+                  onChange={handleInputChange}
+                  className="w-full px-3 py-2 border rounded-md"
+                  required
+                />
+              </div>
+              <div className="mb-4">
+                <label htmlFor="description" className="block mb-1">
+                  Description:
+                </label>
+                <textarea
+                  id="description"
+                  name="description"
+                  value={newProject.description}
+                  onChange={handleInputChange}
+                  className="w-full px-3 py-2 border rounded-md"
+                  rows={3}
+                  required
+                ></textarea>
+              </div>
+              <button
+                type="submit"
+                className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
+              >
+                Submit
+              </button>
+              <button
+                type="button"
+                className="ml-2 text-gray-600 hover:text-gray-800"
+                onClick={closeModal}
+              >
+                Cancel
+              </button>
+            </form>
           </div>
         </div>
-      </nav>
-    </aside>
-  )
-}
-
-export function SidebarItem({ icon, text, active, alert }) {
-  const { expanded } = useContext(SidebarContext)
-  
-  return (
-    <li
-      className={`
-        relative flex items-center py-2 px-3 my-1
-        font-medium rounded-md cursor-pointer
-        transition-colors group
-        ${
-          active
-            ? "bg-gradient-to-tr from-indigo-200 to-indigo-100 text-indigo-800"
-            : "hover:bg-indigo-50 text-gray-600"
-        }
-    `}
-    >
-      {icon}
-      <span
-        className={`overflow-hidden transition-all ${
-          expanded ? "w-52 ml-3" : "w-0"
-        }`}
-      >
-        {text}
-      </span>
-      {alert && (
-        <div
-          className={`absolute right-2 w-2 h-2 rounded bg-indigo-400 ${
-            expanded ? "" : "top-2"
-          }`}
-        />
       )}
+    </>
+  );
+};
 
-      {!expanded && (
-        <div
-          className={`
-          absolute left-full rounded-md px-2 py-1 ml-6
-          bg-indigo-100 text-indigo-800 text-sm
-          invisible opacity-20 -translate-x-3 transition-all
-          group-hover:visible group-hover:opacity-100 group-hover:translate-x-0
-      `}
-        >
-          {text}
-        </div>
-      )}
-    </li>
-  )
-}
+export default Sidebar;
