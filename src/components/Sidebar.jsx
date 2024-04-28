@@ -1,11 +1,12 @@
 /* eslint-disable no-unused-vars */
 import React, { useState } from "react";
+import { useQuery, useMutation } from "@tanstack/react-query";
 
 const Sidebar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isProjectsOpen, setIsProjectsOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [newProject, setNewProject] = useState({ title: "", description: "" });
+  const [newProject, setNewProject] = useState({ "title": "", "description": "" });
 
   const toggleProjectsMenu = () => {
     setIsProjectsOpen(!isProjectsOpen);
@@ -27,16 +28,90 @@ const Sidebar = () => {
     }));
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    // Handle submitting new project data here
-    console.log("New Project:", newProject);
-    // Clear input fields
-    setNewProject({ title: "", description: "" });
-    // Close the modal
-    closeModal();
-  };
+  const createProjectMutation = useMutation((newProject) =>
+    fetch(
+      "https://k1lmamnchf.execute-api.us-east-2.amazonaws.com/Prod/project/v1/create-project",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          ...newProject,
+          user_id: 1, // Assuming user_id is always 1 for now
+        }),
+      }
+    )
+  );
 
+  const { data: projects, isLoading } = useQuery({
+    queryKey: ['projects'],
+    queryFn: async () => {
+      const response = await fetch(
+        "https://k1lmamnchf.execute-api.us-east-2.amazonaws.com/Prod/project/v1/get-projects?user_id=1"
+      );
+      const responseData = await response.json();
+      console.log("Get Projects Response data: ", responseData);
+      return responseData.data;
+    },
+  });
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    console.log("Form submitted!");
+    console.log("1 : ", newProject);
+  
+    try {
+      const response = await fetch(
+        "https://k1lmamnchf.execute-api.us-east-2.amazonaws.com/Prod/project/v1/create-project",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            ...newProject,
+            "user_id": "1", 
+          }),
+        }
+      );
+
+      console.log("POST response : ", response);
+  
+      if (!response.ok) {
+        throw new Error("Failed to create project");
+      }
+  
+      setIsModalOpen(false);
+      console.log("Below Close Modal...");
+  
+      const responseData = await response.json();
+      console.log("Response data:", responseData);
+      refetchProjects();
+    } catch (error) {
+      console.error("Error creating project:", error.message);
+      // Handle error
+    }
+  };
+  
+  const refetchProjects = async () => {
+    try {
+      const response = await fetch(
+        "https://k1lmamnchf.execute-api.us-east-2.amazonaws.com/Prod/project/v1/get-projects?user_id=1"
+      );
+  
+      if (!response.ok) {
+        throw new Error("Failed to fetch projects");
+      }
+  
+      const responseData = await response.json();
+      console.log("Get Projects Response data:", responseData);
+    } catch (error) {
+      console.error("Error fetching projects:", error.message);
+      // Handle error
+    }
+  };
+  
   return (
     <>
       <aside
@@ -47,63 +122,64 @@ const Sidebar = () => {
         aria-label="Sidebar"
         style={{ overflowX: "hidden" }}
       >
-        <div className="h-full px-3 py-4 overflow-y-auto bg-blue-100 dark:bg-blue-800">
+        <div className="h-full px-3 py-4 overflow-y-auto bg-[#100c14] dark:bg-blue-800">
           <ul className="space-y-2 font-medium">
             <li>
               <a
                 href="#"
-                className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
+                className="flex items-center p-2 text-white rounded-lg dark:text-white hover:bg-gray-700 dark:hover:bg-gray-700 group"
               >
-                <span className="ms-3">Dashboard</span>
+                <span className="ms-3">Sandesh's Account</span>
               </a>
             </li>
             <li>
               <button
                 type="button"
                 onClick={toggleProjectsMenu}
-                className="flex items-center justify-between w-[94%] p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
+                className="flex items-center justify-between w-[94%] p-2 text-white rounded-lg dark:text-white hover:bg-gray-700 dark:hover:bg-gray-700 group"
               >
-                <span className="ms-3">Sandesh's Projects</span>
-                <button
-                  type="button"
-                  className="relative p-1 rounded-full bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600"
-                  onClick={openModal}
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-4 w-4 text-gray-600 dark:text-gray-300"
-                    viewBox="0 0 20 20"
-                    fill="currentColor"
+                <span className="ms-3">Projects</span>
+                <div>
+                  <button
+                    type="button"
+                    className="relative p-1 rounded-full bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600"
+                    onClick={openModal}
                   >
-                    <path
-                      fillRule="evenodd"
-                      d="M10 3a1 1 0 0 1 1 1v5h5a1 1 0 1 1 0 2h-5v5a1 1 0 1 1-2 0v-5H4a1 1 0 1 1 0-2h5V4a1 1 0 0 1 1-1z"
-                      clipRule="evenodd"
-                    />
-                  </svg>
-                </button>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-4 w-4 text-gray-600 dark:text-gray-300"
+                      viewBox="0 0 20 20"
+                      fill="currentColor"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M10 3a1 1 0 0 1 1 1v5h5a1 1 0 1 1 0 2h-5v5a1 1 0 1 1-2 0v-5H4a1 1 0 1 1 0-2h5V4a1 1 0 0 1 1-1z"
+                        clipRule="evenodd"
+                      />
+                    </svg>
+                  </button>
+                </div>
               </button>
+
               <ul
                 className={`space-y-1 font-medium ${
                   isProjectsOpen ? "" : "hidden"
                 }`}
               >
-                <li>
-                  <a
-                    href="#"
-                    className="flex items-center p-2 pl-10 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
-                  >
-                    <span className="ms-3">Demo Project 1</span>
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    className="flex items-center p-2 pl-10 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
-                  >
-                    <span className="ms-3">Demo Project 2</span>
-                  </a>
-                </li>
+                {isLoading ? (
+                  <li>Loading...</li>
+                ) : (
+                  projects.map((project) => (
+                    <li key={project.id}>
+                      <a
+                        href="#"
+                        className="flex items-center p-2 pl-10 text-white rounded-lg dark:text-white hover:bg-gray-700 dark:hover:bg-gray-700 group"
+                      >
+                        <span className="ms-3">{project.title}</span>
+                      </a>
+                    </li>
+                  ))
+                )}
               </ul>
             </li>
           </ul>

@@ -2,12 +2,17 @@
 import React from "react";
 import "./index.css";
 import Sidebar from "./components/Sidebar";
+import { QueryClient, QueryClientProvider, useQuery } from '@tanstack/react-query'
+
+const queryClient = new QueryClient();
 
 
 const App = () => {
   return (
     <main className="app">
-      <Sidebar />
+      <QueryClientProvider client={queryClient}>
+        <Sidebar />
+      </QueryClientProvider>
     </main>
   );
 };
