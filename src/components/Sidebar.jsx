@@ -1,15 +1,25 @@
-import React, { useState } from "react";
-import { useQuery, useMutation } from "@tanstack/react-query";
+import React, { useCallback, useContext, useEffect, useState } from "react";
+import { ProjectContext } from "../context/ProjectContext";
 
 const Sidebar = () => {
-  const [isOpen, setIsOpen] = useState(false);
-  const [isProjectsOpen, setIsProjectsOpen] = useState(false);
+  const { projects, fetchProjectsWrapper, loading, setProject } =
+    useContext(ProjectContext);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [newProject, setNewProject] = useState({ title: "", description: "" });
+  const [isProjectsOpen, setIsProjectsOpen] = useState(false);
+  const [projectData, setProjectData] = useState({
+    title: "",
+    description: "",
+    userId: "",
+  });
 
-  const toggleProjectsMenu = () => {
-    setIsProjectsOpen(!isProjectsOpen);
-  };
+  useEffect(() => {
+    console.log("Fetching projects..");
+    fetchProjectsWrapper("1");
+  }, []);
+
+  const toggleProjectsMenu = useCallback(() => {
+    setIsProjectsOpen((prev) => !prev);
+  }, []);
 
   const openModal = () => {
     setIsModalOpen(true);
@@ -21,83 +31,24 @@ const Sidebar = () => {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setNewProject((prevState) => ({
+    setProjectData((prevState) => ({
       ...prevState,
       [name]: value,
     }));
   };
 
-  const { data: projects, isLoading } = useQuery({
-    queryKey: ["projects"],
-    queryFn: async () => {
-      const response = await fetch(
-        "https://dzwh46h2zf.execute-api.us-east-2.amazonaws.com/Prod/project/v1/get-projects?user_id=1"
-      );
-      const responseData = await response.json();
-      console.log("Get Projects Response data: ", responseData);
-      return responseData.data;
+  const handleSubmit = useCallback(
+    async (e) => {
+      e.preventDefault();
     },
-  });
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    console.log("Form submitted!");
-
-    try {
-      const response = await fetch(
-        "https://dzwh46h2zf.execute-api.us-east-2.amazonaws.com/Prod/project/v1/create-project",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            ...newProject,
-            user_id: "1",
-          }),
-        }
-      );
-
-      console.log("POST response : ", response);
-
-      if (!response.ok) {
-        throw new Error("Failed to create project");
-      }
-
-      setIsModalOpen(false);
-
-      const responseData = await response.json();
-      console.log("Response data:", responseData);
-      refetchProjects();
-    } catch (error) {
-      console.error("Error creating project:", error.message);
-    }
-  };
-
-  const refetchProjects = async () => {
-    try {
-      const response = await fetch(
-        "https://dzwh46h2zf.execute-api.us-east-2.amazonaws.com/Prod/project/v1/get-projects?user_id=1"
-      );
-
-      if (!response.ok) {
-        throw new Error("Failed to fetch projects");
-      }
-
-      const responseData = await response.json();
-      console.log("Get Projects Response data:", responseData);
-    } catch (error) {
-      console.error("Error fetching projects:", error.message);
-    }
-  };
+    [projectData]
+  );
 
   return (
-    <>
+    <div>
       <aside
         id="sidebar-multi-level-sidebar"
-        className={`fixed top-0 left-0 z-40 w-64 h-screen transition-transform ${
-          isOpen ? "" : "-translate-x-full sm:translate-x-0"
-        }`}
+        className={` z-40 w-64 h-screen transition-transform `}
         aria-label="Sidebar"
         style={{ overflowX: "hidden" }}
       >
@@ -112,7 +63,7 @@ const Sidebar = () => {
               </a>
             </li>
             <li>
-              <div
+              <button
                 type="button"
                 onClick={toggleProjectsMenu}
                 className="flex items-center justify-between w-[94%] p-2 text-white rounded-lg dark:text-white hover:bg-gray-700 dark:hover:bg-gray-700 group"
@@ -138,23 +89,28 @@ const Sidebar = () => {
                     </svg>
                   </button>
                 </div>
-              </div>
+              </button>
 
               <ul
                 className={`space-y-1 font-medium ${
                   isProjectsOpen ? "" : "hidden"
                 }`}
               >
-                {isLoading ? (
+                {loading.projects ? (
                   <li>Loading...</li>
                 ) : (
                   projects.map((project) => (
-                    <li key={project.id}>
+                    <li key={project._id}>
                       <a
                         href="#"
                         className="flex items-center p-2 pl-10 text-white rounded-lg dark:text-white hover:bg-gray-700 dark:hover:bg-gray-700 group"
                       >
-                        <span className="ms-3">{project.title}</span>
+                        <button
+                          className="ms-3"
+                          onClick={() => setProject(project._id)}
+                        >
+                          {project.title}
+                        </button>
                       </a>
                     </li>
                   ))
@@ -165,7 +121,6 @@ const Sidebar = () => {
         </div>
       </aside>
 
-      {/* Modal */}
       {isModalOpen && (
         <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50">
           <div className="bg-white p-6 rounded-lg w-96">
@@ -179,7 +134,7 @@ const Sidebar = () => {
                   type="text"
                   id="title"
                   name="title"
-                  value={newProject.title}
+                  value={projectData.title}
                   onChange={handleInputChange}
                   className="w-full px-3 py-2 border rounded-md"
                   required
@@ -192,7 +147,7 @@ const Sidebar = () => {
                 <textarea
                   id="description"
                   name="description"
-                  value={newProject.description}
+                  value={projectData.description}
                   onChange={handleInputChange}
                   className="w-full px-3 py-2 border rounded-md"
                   rows={3}
@@ -216,50 +171,8 @@ const Sidebar = () => {
           </div>
         </div>
       )}
-    </>
+    </div>
   );
 };
 
 export default Sidebar;
-<div className="drawer">
-  <input id="my-drawer" type="checkbox" className="drawer-toggle" />
-  <div className="drawer-content">
-    {/* Page content here */}
-    <label htmlFor="my-drawer" className="btn btn-primary drawer-button">
-      Open drawer
-    </label>
-  </div>
-  <div className="drawer-side">
-    <label
-      htmlFor="my-drawer"
-      aria-label="close sidebar"
-      className="drawer-overlay"
-    ></label>
-    <ul className="menu p-4 w-80 min-h-full bg-base-200 text-base-content">
-      {/* Sidebar content here */}
-      <li>
-        <a>Sidebar Item 1</a>
-      </li>
-      <li>
-        <a>Sidebar Item 2</a>
-      </li>
-    </ul>
-  </div>
-</div>;
-
-
-const [openModal, setOpenModal] = useState(false);
-  return (
-    <>
-      <h1>Click here to create new project</h1>
-      <button
-        className="openModalbtn"
-        onClick={() => {
-          setOpenModal(true);
-        }}
-      >
-        Create Project
-      </button>
-      {openModal && <Modal closeModalProp={setOpenModal} />}
-    </>
-  );

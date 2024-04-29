@@ -1,18 +1,15 @@
-/* eslint-disable no-unused-vars */
-import React from "react";
-import { useState } from "react";
-import "./index.css";
-import ProjectPage from "./components/Projectpage";
-import { UserCircle, BarChart3, LayoutDashboard } from "lucide-react";
-import TestProjectPage from "./components/TestProjectPage";
-import EditedVideosComponent from "./components/EditedVideosComponent";
+import React from 'react';
+import Sidebar from "./components/Sidebar";
+import Dashboard from "./components/Dashboard";
+import Upload from "./components/Upload";
 
 const App = () => {
   return (
-    <>
-      {/* <ProjectPage /> */}
-      <EditedVideosComponent />
-    </>
+    <main className="app flex">
+      <Sidebar />
+      <Dashboard />
+      <Upload />
+    </main>
   );
 };
 
