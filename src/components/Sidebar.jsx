@@ -6,7 +6,7 @@ const Sidebar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isProjectsOpen, setIsProjectsOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [newProject, setNewProject] = useState({ "title": "", "description": "" });
+  const [newProject, setNewProject] = useState({ title: "", description: "" });
 
   const toggleProjectsMenu = () => {
     setIsProjectsOpen(!isProjectsOpen);
@@ -28,27 +28,11 @@ const Sidebar = () => {
     }));
   };
 
-  const createProjectMutation = useMutation((newProject) =>
-    fetch(
-      "https://k1lmamnchf.execute-api.us-east-2.amazonaws.com/Prod/project/v1/create-project",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          ...newProject,
-          user_id: 1, // Assuming user_id is always 1 for now
-        }),
-      }
-    )
-  );
-
   const { data: projects, isLoading } = useQuery({
-    queryKey: ['projects'],
+    queryKey: ["projects"],
     queryFn: async () => {
       const response = await fetch(
-        "https://k1lmamnchf.execute-api.us-east-2.amazonaws.com/Prod/project/v1/get-projects?user_id=1"
+        "https://dzwh46h2zf.execute-api.us-east-2.amazonaws.com/Prod/project/v1/get-projects?user_id=1"
       );
       const responseData = await response.json();
       console.log("Get Projects Response data: ", responseData);
@@ -59,11 +43,10 @@ const Sidebar = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     console.log("Form submitted!");
-    console.log("1 : ", newProject);
-  
+
     try {
       const response = await fetch(
-        "https://k1lmamnchf.execute-api.us-east-2.amazonaws.com/Prod/project/v1/create-project",
+        "https://dzwh46h2zf.execute-api.us-east-2.amazonaws.com/Prod/project/v1/create-project",
         {
           method: "POST",
           headers: {
@@ -71,47 +54,44 @@ const Sidebar = () => {
           },
           body: JSON.stringify({
             ...newProject,
-            "user_id": "1", 
+            user_id: "1",
           }),
         }
       );
 
       console.log("POST response : ", response);
-  
+
       if (!response.ok) {
         throw new Error("Failed to create project");
       }
-  
+
       setIsModalOpen(false);
-      console.log("Below Close Modal...");
-  
+
       const responseData = await response.json();
       console.log("Response data:", responseData);
       refetchProjects();
     } catch (error) {
       console.error("Error creating project:", error.message);
-      // Handle error
     }
   };
-  
+
   const refetchProjects = async () => {
     try {
       const response = await fetch(
-        "https://k1lmamnchf.execute-api.us-east-2.amazonaws.com/Prod/project/v1/get-projects?user_id=1"
+        "https://dzwh46h2zf.execute-api.us-east-2.amazonaws.com/Prod/project/v1/get-projects?user_id=1"
       );
-  
+
       if (!response.ok) {
         throw new Error("Failed to fetch projects");
       }
-  
+
       const responseData = await response.json();
       console.log("Get Projects Response data:", responseData);
     } catch (error) {
       console.error("Error fetching projects:", error.message);
-      // Handle error
     }
   };
-  
+
   return (
     <>
       <aside
@@ -133,7 +113,7 @@ const Sidebar = () => {
               </a>
             </li>
             <li>
-              <button
+              <div
                 type="button"
                 onClick={toggleProjectsMenu}
                 className="flex items-center justify-between w-[94%] p-2 text-white rounded-lg dark:text-white hover:bg-gray-700 dark:hover:bg-gray-700 group"
@@ -159,7 +139,7 @@ const Sidebar = () => {
                     </svg>
                   </button>
                 </div>
-              </button>
+              </div>
 
               <ul
                 className={`space-y-1 font-medium ${
