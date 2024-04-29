@@ -16,7 +16,7 @@ const Upload = () => {
 
       if (files.length === 0) return;
 
-      setFile(files[0].name);
+      setFile(files[0]);
       setUploadProgress(0);
       setUploading(true);
 
@@ -25,7 +25,7 @@ const Upload = () => {
           files[0],
           currentProjectId,
           assets.current_section,
-          () => {
+          (event) => {
             const progress = Math.round((event.loaded / event.total) * 100);
             console.log("Uploaded: ", progress);
             setUploadProgress(progress);
@@ -49,23 +49,21 @@ const Upload = () => {
 
   return (
     <div className="fixed bottom-8 right-8 flex items-center">
-      <div className="ml-4 ">
-        <div>
-          {uploading && (
-            <>
-              <div className="text-white">{file.name}</div>
-              <ProgressBar
-                completed={uploadProgress}
-                maxCompleted={100}
-                baseBgColor="#e0e0de"
-                borderRadius="50px"
-              ></ProgressBar>
-            </>
-          )}
-        </div>
+      <div className="ml-4">
+        {uploading && (
+          <div className="w-full mr-5">
+            <p className="text-white">Uploading: {file.name}</p>
+            <ProgressBar
+              completed={uploadProgress}
+              maxCompleted={100}
+              baseBgColor="#e0e0de"
+              borderRadius="50px"
+              width="500px"
+            ></ProgressBar>
+          </div>
+        )}
       </div>
       {/* Display loading status while uploading */}
-      {uploading && <div className="ml-4  text-gray-700">Uploading</div>}
       <button
         className="bg-slate-500 text-white rounded-box p-14 relative overflow-hidden"
         onMouseEnter={() => setHovered(true)}
