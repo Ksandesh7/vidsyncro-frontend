@@ -1,18 +1,16 @@
 /* eslint-disable no-unused-vars */
 import React from "react";
+import { useState } from "react";
 import "./index.css";
-import Sidebar from "./components/Sidebar";
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-
-const queryClient = new QueryClient();
+import ProjectPage from "./components/Projectpage";
+import { UserCircle, BarChart3, LayoutDashboard } from "lucide-react";
+import TestProjectPage from "./components/TestProjectPage";
 
 const App = () => {
   return (
-    <main className="app">
-      <QueryClientProvider client={queryClient}>
-          <Sidebar />
-      </QueryClientProvider>
-    </main>
+    <>
+      <ProjectPage />
+    </>
   );
 };
 
