@@ -1,23 +1,15 @@
 import React from "react";
 import "./index.css";
-import Sidebar, { SidebarItem } from "./components/Sidebar";
-import {
-  UserCircle,
-  BarChart3,
-  LayoutDashboard,
-} from "lucide-react";
+import Sidebar from "./components/Sidebar";
+import Dashboard from "./components/Dashboard";
+import Upload from "./components/Upload";
 
 const App = () => {
   return (
-    <main className="app">
-      <Sidebar>
-        <SidebarItem icon={<BarChart3 size={20} />} text="Create Project" alert />
-
-        <SidebarItem icon={<LayoutDashboard size={20} />} text="Demo Project 1" active />
-    
-        <SidebarItem icon={<UserCircle size={20} />} text="Demo Project 2" />
-        
-      </Sidebar>
+    <main className="app flex">
+      <Sidebar />
+      <Dashboard />
+      <Upload />
     </main>
   );
 };
