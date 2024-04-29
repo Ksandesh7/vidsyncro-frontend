@@ -1,6 +1,7 @@
 import { createContext, useCallback, useState } from "react";
 import fetchProjects from "../api/fetchProjects";
 import fetchAssets from "../api/fetchAssets";
+import uploadFile from "../api/uploadAssets";
 
 export const ProjectContext = createContext({});
 
@@ -29,6 +30,8 @@ const ProjectProvider = ({ children }) => {
       const projects = await fetchProjects(userId);
       setProjects(projects);
 
+      if (projects.length > 0) setCurrentProjectId(projects[0]._id);
+
       setLoading((prev) => ({
         ...prev,
         projects: false,
@@ -38,28 +41,53 @@ const ProjectProvider = ({ children }) => {
     }
   }, []);
 
-  const fetchAssetsWrapper = useCallback(async (projectId, userId) => {
-    try {
-      setLoading((prev) => ({
-        ...prev,
-        assets: true,
-      }));
+  const fetchAssetsWrapper = useCallback(
+    async (userId) => {
+      try {
+        setLoading((prev) => ({
+          ...prev,
+          assets: true,
+        }));
 
-      const assets = await fetchAssets(projectId, userId, "assets");
+        const res = await fetchAssets(
+          currentProjectId,
+          userId,
+          assets.current_section
+        );
 
-      setAssets((prev) => ({
-        ...prev,
-        assets,
-      }));
+        setAssets((prev) => ({
+          ...prev,
+          [assets.current_section]: res,
+        }));
 
-      setLoading((prev) => ({
-        ...prev,
-        assets: false,
-      }));
-    } catch (error) {
-      console.log(error.message);
-    }
-  }, []);
+        setLoading((prev) => ({
+          ...prev,
+          assets: false,
+        }));
+      } catch (error) {
+        console.log(error.message);
+      }
+    },
+    [currentProjectId, assets.current_section]
+  );
+
+  const uploadFileWrapper = useCallback(
+    async (file, onProgress) => {
+      try {
+        console.log(file, currentProjectId, assets.current_section, onProgress);
+
+        await uploadFile(
+          file,
+          currentProjectId,
+          assets.current_section,
+          onProgress
+        );
+      } catch (error) {
+        console.log(error.message);
+      }
+    },
+    [currentProjectId, assets.current_section]
+  );
 
   const setSection = useCallback((section) => {
     setAssets((prev) => ({ ...prev, current_section: section }));
@@ -89,6 +117,7 @@ const ProjectProvider = ({ children }) => {
         fetchAssetsWrapper,
         setSection,
         setProject,
+        uploadFileWrapper,
       }}
     >
       {children}

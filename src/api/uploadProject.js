@@ -8,7 +8,7 @@ export default async function uploadProject(title, description, userId) {
       user_id: userId,
     });
 
-    return res.data.data;
+    return res.data.data || [];
   } catch (error) {
     console.log("Error while uploading project: ", error.message);
     throw error;

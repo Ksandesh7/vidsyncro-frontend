@@ -10,7 +10,9 @@ export default async function fetchAssets(projectId, userId, segment) {
       },
     });
 
-    return res.data.data;
+    console.log(res.data);
+
+    return res.data.data || [];
   } catch (error) {
     console.log(error.message);
     throw error;
