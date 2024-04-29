@@ -4,9 +4,10 @@ import Assets from "./Assets";
 import Production from "./Production";
 import EditedVideos from "./EditedVideos";
 import TimelineVideos from "./TimelineVideos";
+import { RefreshCcw, RefreshCcwDot } from "lucide-react";
 
 const Dashboard = () => {
-  const { assets, setSection, projects, currentProjectId } =
+  const { assets, setSection, projects, currentProjectId, fetchAssetsWrapper } =
     useContext(ProjectContext);
 
   const section = assets.current_section;
@@ -27,55 +28,63 @@ const Dashboard = () => {
       </header>
 
       {/* Navbar */}
-      <nav className="relative py-4 px-8 w-full">
-        <ul className="flex space-x-4">
-          <li>
-            <a
-              id="UploadedFiles"
-              href="#UploadedFiles"
-              className={`text-${
-                section === "assets" ? "white" : "gray-600"
-              } hover:text-white font-semibold `}
-              onClick={(e) => setSection("assets")}
-            >
-              Assets
-            </a>
-          </li>
-          <li>
-            <a
-              href="#Timeline"
-              className={`text-${
-                section === "timeline_videos" ? "white" : "gray-600"
-              } hover:text-white font-semibold`}
-              onClick={(e) => setSection("timeline_videos")}
-            >
-              Timeline videos
-            </a>
-          </li>
-          <li>
-            <a
-              href="#EditedVideos"
-              className={`text-${
-                section === "edited_videos" ? "white" : "gray-600"
-              } hover:text-white font-semibold`}
-              onClick={(e) => setSection("edited_videos")}
-            >
-              Edited Videos
-            </a>
-          </li>
-          <li>
-            <a
-              href="#Production"
-              className={`text-${
-                section === "production" ? "white" : "gray-600"
-              } hover:text-white font-semibold`}
-              onClick={(e) => setSection("production")}
-            >
-              Production
-            </a>
-          </li>
-        </ul>
-      </nav>
+      <div className="flex justify-between items-center">
+        <nav className="relative py-4 px-8 w-full">
+          <ul className="flex space-x-4">
+            <li>
+              <a
+                id="UploadedFiles"
+                href="#UploadedFiles"
+                className={`text-${
+                  section === "assets" ? "white" : "gray-600"
+                } hover:text-white font-semibold `}
+                onClick={(e) => setSection("assets")}
+              >
+                Assets
+              </a>
+            </li>
+            <li>
+              <a
+                href="#Timeline"
+                className={`text-${
+                  section === "timeline_videos" ? "white" : "gray-600"
+                } hover:text-white font-semibold`}
+                onClick={(e) => setSection("timeline_videos")}
+              >
+                Timeline videos
+              </a>
+            </li>
+            <li>
+              <a
+                href="#EditedVideos"
+                className={`text-${
+                  section === "edited_videos" ? "white" : "gray-600"
+                } hover:text-white font-semibold`}
+                onClick={(e) => setSection("edited_videos")}
+              >
+                Edited Videos
+              </a>
+            </li>
+            <li>
+              <a
+                href="#Production"
+                className={`text-${
+                  section === "production" ? "white" : "gray-600"
+                } hover:text-white font-semibold`}
+                onClick={(e) => setSection("production")}
+              >
+                Production
+              </a>
+            </li>
+          </ul>
+        </nav>
+        <button
+          onClick={fetchAssetsWrapper}
+          className="text-white hover:text-gray-200 hover:bg-opacity-50 mr-5"
+        >
+          <RefreshCcw />
+        </button>
+      </div>
       {
         {
           assets: <Assets />,

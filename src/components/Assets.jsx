@@ -22,21 +22,23 @@ const Assets = () => {
         </div>
       ) : (
         <div className="grid grid-cols-3 gap-5">
-          {assets?.assets.map((asset) => (
-            <div key={asset.Key} className="bg-gray-200 p-4">
-              {/* Video thumbnail (replace with actual thumbnail image) */}
-              <video
-                controls
-                src={`https://d9acgijza706g.cloudfront.net/${asset.Key}`}
-                className="w-full h-auto "
-                content={asset.name}
-                playsInline
-              />
-              <p className="text-sm text-black font-medium text-wrap">
-                {asset.name}
-              </p>
-            </div>
-          ))}
+          {assets?.assets
+            .filter((e) => e?.Key?.endsWith(".mp4"))
+            .map((asset) => (
+              <div key={asset.Key} className="bg-gray-200 p-4">
+                {/* Video thumbnail (replace with actual thumbnail image) */}
+                <video
+                  controls
+                  src={`https://d9acgijza706g.cloudfront.net/${asset.Key}`}
+                  className="w-full h-auto "
+                  content={asset.name}
+                  playsInline
+                />
+                <p className="text-sm text-black font-medium text-wrap">
+                  {asset.name}
+                </p>
+              </div>
+            ))}
         </div>
       )}
     </div>

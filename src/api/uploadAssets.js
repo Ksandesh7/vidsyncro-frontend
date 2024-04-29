@@ -18,21 +18,20 @@ export default async function uploadFile(file, projectId, segment, onProgress) {
       ],
     });
 
-    const url = res.data.urls[0];
+    const url = res.data.urls[0].url;
 
     await new Promise((resolve, reject) => {
       const xhr = new XMLHttpRequest();
       xhr.open("PUT", url, true);
-      xhr.setRequestHeader("Content-Type", file.type);
       xhr.upload.onprogress = onProgress;
       xhr.onload = () => {
         if (xhr.status === 200) {
           resolve();
         } else {
-          reject(xhr.statusText);
+          reject(xhr);
         }
       };
-      xhr.onerror = () => reject(xhr.statusText);
+      xhr.onerror = () => reject(xhr);
       xhr.send(file);
     });
   } catch (error) {
