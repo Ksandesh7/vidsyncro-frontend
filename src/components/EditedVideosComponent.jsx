@@ -118,6 +118,7 @@ const EditedVideosPage = () => {
           description={selectedVideo.events.transcription.output.description}
           thumbnailIdeas={selectedVideo.events.transcription.output.thumbnail}
           mpd={selectedVideo.events.transcoding.output.output_path}
+          vtt={selectedVideo.events.transcription.output.vtt}
           onClose={handleCloseModal}
         />
       )}

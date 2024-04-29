@@ -7,10 +7,10 @@ import EditedVideosComponent from './components/EditedVideosComponent';
 const App = () => {
   return (
     <main className="app flex">
-      {/* <Sidebar />
+      <Sidebar />
       <Dashboard />
-      <Upload /> */}
-      <EditedVideosComponent />
+      <Upload />
+      {/* <EditedVideosComponent /> */}
     </main>
   );
 };
