@@ -1,7 +1,15 @@
-import React from 'react';
+import React from "react";
+import ReactPlayer from "react-player";
+import { useRef } from "react";
+import ShakaPlayer from "shaka-player-react";
+import "shaka-player/dist/controls.css";
+import shaka from "shaka-player";
 
-const VideoPreviewModal = ({ video, onClose }) => {
-  const { title, description, thumbnailIdeas } = video;
+const VideoPreviewModal = ({ title, description, thumbnailIdeas, mpd, onClose }) => {
+  const playerRef = useRef();
+
+  console.log(title, description, thumbnailIdeas, mpd);
+  // console.log(video)
 
   return (
     <div className="fixed inset-0 z-50 overflow-auto bg-gray-500 bg-opacity-50 flex justify-center items-center">
@@ -9,8 +17,31 @@ const VideoPreviewModal = ({ video, onClose }) => {
         <div className="grid grid-rows-2 grid-cols-2 gap-4">
           <div className="col-span-2">
             {/* React Video Player */}
-            <div style={{ width: '100%', paddingBottom: '56.25%', position: 'relative' }}>
+            <div
+              style={{
+                width: "100%",
+                paddingBottom: "9.25%",
+                position: "relative",
+              }}
+            >
               {/* Video player component here */}
+              {/* <ReactPlayer
+                url="https://d9acgijza706g.cloudfront.net/6628ecabe432f93b54679a5b/dash/627957f23095-4e1b-a964-ef36f27b4b9d_vidsyncro.mp4/dash.mpd"
+                autoPlay={true}
+                controls={true}
+                width="1200"
+                height="auto"
+                ref={playerRef}
+              /> */}
+              <ShakaPlayer autoPlay src={`https://d9acgijza706g.cloudfront.net/${mpd}`} />
+              {/* const videoSource = new shaka.media.DashVideoSource('https://d9acgijza706g.cloudfront.net/6628ecabe432f93b54679a5b/dash/627957f23095-4e1b-a964-ef36f27b4b9d_vidsyncro.mp4/dash.mpd'); 
+              const player = new shaka.Player(); 
+              player.load(videoSource);
+              const textTrack = new shaka.text.TextTrack();
+              textTrack.addTextTrack(subtitleFile, 'en');
+              player.addTextTrack(textTrack);
+              const videoElement = document.querySelector('#my-video');
+              player.attach(videoElement); */}
             </div>
           </div>
           <div className="col-span-1">

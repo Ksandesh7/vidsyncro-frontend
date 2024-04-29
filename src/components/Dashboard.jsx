@@ -1,8 +1,10 @@
+/* eslint-disable no-unused-vars */
 import React, { useContext } from "react";
 import { ProjectContext } from "../context/ProjectContext";
 import Assets from "./Assets";
 import Production from "./Production";
 import EditedVideos from "./EditedVideos";
+import EditedVideosComponent from "./EditedVideosComponent";
 import TimelineVideos from "./TimelineVideos";
 import { RefreshCcw, RefreshCcwDot } from "lucide-react";
 
@@ -89,7 +91,7 @@ const Dashboard = () => {
         {
           assets: <Assets />,
           production: <Production />,
-          edited_videos: <EditedVideos />,
+          edited_videos: <EditedVideosComponent />,
           timeline_videos: <TimelineVideos />,
         }[section]
       }
