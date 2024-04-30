@@ -40,9 +40,6 @@ const Sidebar = () => {
   const handleSubmit = useCallback(
     async (e) => {
       e.preventDefault();
-
-      try {
-      } catch (error) {}
     },
     [projectData]
   );
