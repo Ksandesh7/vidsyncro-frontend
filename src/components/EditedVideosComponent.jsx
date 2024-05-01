@@ -9,7 +9,7 @@ const EditedVideosPage = () => {
     const fetchData = async () => {
       try {
         const response = await fetch(
-          "https://dzwh46h2zf.execute-api.us-east-2.amazonaws.com/Prod/assets/v1/get-assets?project_id=662cb6594b91590bdd3b1b4e&segment=edited_videos&user_id=1"
+          "https://dzwh46h2zf.execute-api.us-east-2.amazonaws.com/Prod/assets/v1/get-assets?project_id=66313858138fbf2c713f310f&segment=edited_videos&user_id=1"
         );
         const data = await response.json();
         setResponseData(data);
