@@ -45,7 +45,7 @@ const Dashboard = () => {
                 Assets
               </a>
             </li>
-            <li>
+            {/* <li>
               <a
                 href="#Timeline"
                 className={`text-${
@@ -55,7 +55,7 @@ const Dashboard = () => {
               >
                 Timeline videos
               </a>
-            </li>
+            </li> */}
             <li>
               <a
                 href="#EditedVideos"

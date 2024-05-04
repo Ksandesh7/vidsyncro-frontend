@@ -122,9 +122,9 @@ const Sidebar = () => {
       </aside>
 
       {isModalOpen && (
-        <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50">
-          <div className="bg-white p-6 rounded-lg w-96">
-            <h2 className="text-lg font-semibold mb-4">Add a Project</h2>
+        <div className="fixed inset-0 flex items-center justify-center z-50 bg-gray-900 bg-opacity-50">
+          <div className="bg-white  p-6 rounded-lg w-96">
+            <h2 className="text-lg  font-semibold mb-4">Add a Project</h2>
             <form onSubmit={handleSubmit}>
               <div className="mb-4">
                 <label htmlFor="title" className="block mb-1">
