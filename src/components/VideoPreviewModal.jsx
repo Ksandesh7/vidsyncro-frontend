@@ -33,7 +33,7 @@ const VideoPreviewModal = ({
                   label: "English",
                   url: `https://d9acgijza706g.cloudfront.net/${vtt}`,
                 },
-              ]}
+              ]}x     
             /> */}
             <ShakaPlayer
               autoPlay
