@@ -1,15 +1,34 @@
-import React from "react";
+import React, { useCallback } from "react";
 import { Link, useNavigate } from "react-router-dom";
-
+import { ProjectContext } from "../context/ProjectContext";
+import { useContext, useState } from "react";
 export default function Login() {
   const navigate = useNavigate();
+  const { signInAccount } = useContext(ProjectContext);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
 
-  const handleLogin = (event) => {
-    event.preventDefault(); // Prevent default form submission behavior
-    // Simulate login logic (replace with actual authentication)
-    console.log("Login successful!"); // Placeholder for now
-    navigate('/home'); // Redirect to /home on successful login
-  };
+  // const handleLogin = (event) => {
+  //   event.preventDefault(); // Prevent default form submission behavior
+  //   // Simulate login logic (replace with actual authentication)
+  //   console.log("Login successful!"); // Placeholder for now
+  //   navigate('/home'); // Redirect to /home on successful login
+  // };
+  const handleSubmit = useCallback(
+    async (e) => {
+      console.log("hello");
+      e.preventDefault();
+      try {
+        await signInAccount(email, password);
+        console.log("succesfully Loggeed In");
+        // Redirect or show success message after successful account creation
+      } catch (error) {
+        setError(error.message);
+      }
+    },
+    [email, password]
+  );
 
   return (
     <div className="w-full">
@@ -31,7 +50,7 @@ export default function Login() {
               <h1 className="text-xl font-bold leading-tight tracking-tight text-white md:text-2xl">
                 Sign in to your account
               </h1>
-              <form className="space-y-4 md:space-y-6" action="#">
+              <form className="space-y-4 md:space-y-6" onSubmit={handleSubmit}>
                 <div>
                   <label
                     htmlFor="email"
@@ -43,6 +62,8 @@ export default function Login() {
                     type="email"
                     name="email"
                     id="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
                     className="bg-gray-700 border border-gray-600 text-white sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                     placeholder="name@company.com"
                     required=""
@@ -59,6 +80,8 @@ export default function Login() {
                     type="password"
                     name="password"
                     id="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
                     placeholder="••••••••"
                     className="bg-gray-700 border border-gray-600 text-white sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                     required=""
@@ -76,8 +99,7 @@ export default function Login() {
 
                 <button
                   type="submit"
-                  action="#"
-                  onSubmit={handleLogin}
+                  //onSubmit={handleSubmit}
                   className="w-full text-white bg-blue-500 hover:bg-blue-600 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-500 dark:hover:bg-blue-600 dark:focus:ring-blue-800"
                 >
                   Sign in

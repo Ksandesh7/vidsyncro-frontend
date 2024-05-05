@@ -2,7 +2,8 @@ import { createContext, useCallback, useState } from "react";
 import fetchProjects from "../api/fetchProjects";
 import fetchAssets from "../api/fetchAssets";
 import uploadFile from "../api/uploadAssets";
-
+import createAccount from "../api/createAccount";
+import signIn from "../api/signIn";
 export const ProjectContext = createContext({});
 
 const ProjectProvider = ({ children }) => {
@@ -103,6 +104,23 @@ const ProjectProvider = ({ children }) => {
 
     setCurrentProjectId(projectId);
   }, []);
+  const handleCreateAccount = useCallback(async (username, email, password) => {
+    try {
+      await createAccount(username, email, password); // Call the createAccount function
+      console.log("Account created successfully!");
+    } catch (error) {
+      console.error("Error creating account:", error);
+    }
+  }, []);
+  const signInAccount = useCallback(async (email, password) => {
+    try {
+      await signIn(email, password); // Call the createAccount function
+      console.log("Account Logged In successfully!");
+    } catch (error) {
+      console.error("Error Logging account:", error);
+      throw error;
+    }
+  }, []);
 
   return (
     <ProjectContext.Provider
@@ -118,6 +136,8 @@ const ProjectProvider = ({ children }) => {
         setSection,
         setProject,
         uploadFileWrapper,
+        createAccount: handleCreateAccount,
+        signInAccount,
       }}
     >
       {children}

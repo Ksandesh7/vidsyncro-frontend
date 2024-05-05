@@ -4,7 +4,7 @@ export default async function fetchAssets(projectId, userId, segment) {
   try {
     const res = await axiosClient.get("/assets/v1/get-assets", {
       params: {
-        user_id: userId,
+      //  user_id: userId,
         project_id: projectId,
         segment,
       },

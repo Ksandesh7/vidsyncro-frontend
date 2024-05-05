@@ -1,7 +1,25 @@
-import React from "react";
+import React, { useContext, useState } from "react";
 import { Link } from "react-router-dom";
+import { ProjectContext } from "../context/ProjectContext";
 
 export default function Signup() {
+  const { createAccount } = useContext(ProjectContext);
+  const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      await createAccount(username, email, password);
+      console.log("succesfully created account");
+      // Redirect or show success message after successful account creation
+    } catch (error) {
+      setError(error.message);
+    }
+  };
+
   return (
     <div className="w-full">
       <section className="bg-gray-900 text-white">
@@ -22,7 +40,25 @@ export default function Signup() {
               <h1 className="text-xl font-bold leading-tight tracking-tight text-white md:text-2xl">
                 Create an account
               </h1>
-              <form className="space-y-4 md:space-y-6" action="#">
+              <form className="space-y-4 md:space-y-6" onSubmit={handleSubmit}>
+                <div>
+                  <label
+                    htmlFor="username"
+                    className="block mb-2 text-sm font-medium text-white"
+                  >
+                    Username
+                  </label>
+                  <input
+                    type="text"
+                    name="username"
+                    id="username"
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
+                    className="bg-gray-700 border border-gray-600 text-white sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                    placeholder="name@company.com"
+                    required=""
+                  />
+                </div>
                 <div>
                   <label
                     htmlFor="email"
@@ -34,6 +70,8 @@ export default function Signup() {
                     type="email"
                     name="email"
                     id="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
                     className="bg-gray-700 border border-gray-600 text-white sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                     placeholder="name@company.com"
                     required=""
@@ -50,6 +88,8 @@ export default function Signup() {
                     type="password"
                     name="password"
                     id="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
                     placeholder="••••••••"
                     className="bg-gray-700 border border-gray-600 text-white sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                     required=""
@@ -62,6 +102,7 @@ export default function Signup() {
                 >
                   Create an account
                 </button>
+                {error && <p className="text-red-500">{error}</p>}
                 <p className="text-sm font-light text-gray-500 dark:text-gray-400">
                   Already have an account?{" "}
                   <Link
